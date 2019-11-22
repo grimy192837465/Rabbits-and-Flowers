@@ -1,5 +1,5 @@
 import paramiko
-import time
+import getpass
 import sys
 
 try:
@@ -18,7 +18,7 @@ except KeyboardInterrupt:
     sys.exit()
 
 #password of the user that will be logging into on the instance
-password = raw_input("What is the password of the user of which you would like to connect to?")
+password = getpass.getpass("What is the password of the user of which you would like to connect to?")
     
 #port that is used connect to the instance
 port = 22
@@ -36,10 +36,8 @@ except paramiko.AuthenticationException:
 
 print("*****Connecting...*****")
 #wait for 3 seconds
-time.sleep(3)
 print("*****Connected!*****")
 #wait for 1 second
-time.sleep(1)
 
 #Asks the user what command they would like to run
 try:
