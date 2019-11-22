@@ -1,3 +1,8 @@
+"""
+TODO
+interactive commands in sed commands functions
+"""
+
 import paramiko
 import getpass
 import sys
@@ -30,7 +35,7 @@ def connect(ip_address, username, port=22):
 
 
 
-def sendcommand(command, cmdin):
+def sendcommand(command, cmdin=None):
     global ssh_connection
     #stdin is used for commands requiring inputs
     #stdout gives the output of the command
@@ -46,7 +51,8 @@ def close():
 #For testing purposes only
 if __name__ == '__main__':
     connect("127.0.0.1", "lewis")
-    output = sendcommand("./hello", "Testawdfad")
+    output = sendcommand("sudo ls")
+    passw = getpass.getpass("sudo password")
     print(output)
     close()
     
