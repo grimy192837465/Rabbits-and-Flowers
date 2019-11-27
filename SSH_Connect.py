@@ -1,58 +1,70 @@
 """
-TODO
-interactive commands in sed commands functions
+Implements a basic API for use with paramiko
+Allows you to instantiate a ssh connection to a remote host using paramiko and send commands
+Sends stdout and stderr back to the caller
 """
 
 import paramiko
-import getpass
 import sys
 
-#start the ssh connection 
-ssh_connection=paramiko.SSHClient()
 
-def connect(ip_address, username, port=22):
-    global ssh_connection
-    try:
-        password = getpass.getpass("What is the password of the user of which you would like to connect to?")
-        #trusts all connections
-        ssh_connection.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        print("*****Connecting...*****")
-        #gets the information neded to make the ssh connection
-        ssh_connection.connect(hostname = ip_address, username = username,password = password, port = port)
-        #if the connection information is wrong, catch the error and close the program
-        
-    except paramiko.AuthenticationException:
-        print("*****Invalid details provided, please check the details and try again*****")
-        sys.exit()
-        
-    except KeyboardInterrupt:
-        print("\nSSH session closed")
-        #exit program
-        sys.exit()
-            
-    print("*****Connected!*****")
-    return
+class SSH:
+    def __init__(self, ip_address, username, password, port=22):
+        self._connection = paramiko.SSHClient()
+        self._address = ip_address
+        self._username = username
+        self._password = password
+        self._port = port
+
+    def connect(self):
+        try:
+            # Automatically add unknown hosts to known hosts
+            self._connection.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            print("*****Connecting...*****")
+            # Connect to remote host
+            self._connection.connect(
+                hostname=self._address,
+                username=self._username,
+                password=self._password,
+                port=self._port
+            )
+            print("Connected")
+            return 0
+
+        except paramiko.AuthenticationException:
+            # Executed if authentication errors occur
+            print("Authentication exception occured please check your details and try again.")
+            # Below line commented out and changed with return statement to allow caller to control exception
+            # to allow retries
+            # sys.exit()
+            # Non zero return codes signify error
+            return 1
+
+    def send_command(self, command, cmd_input=None):
+        # stdin is used for commands requiring inputs
+        # stdout gives the output of the command
+        # stderr shows any errors
+        stdin, stdout, stderr = self._connection.exec_command(command)
+        stdin.write("{}\n".format(cmd_input))
+        return (stdout.read(), stderr.read())
+
+    def close(self):
+        print("Closing SSH Connection")
+        self._connection.close()
+
+    def __del__(self):
+        self.close()
 
 
-
-def sendcommand(command, cmdin=None):
-    global ssh_connection
-    #stdin is used for commands requiring inputs
-    #stdout gives the output of the command
-    #stderr shows any errors
-    stdin, stdout, stderr = ssh_connection.exec_command (command)
-    stdin.write("{}\n".format(cmdin))
-    return(stdout.read(), stderr.read())
-
-def close():
-    ssh_connection.close()
-
-
-#For testing purposes only
+# For testing purposes only
 if __name__ == '__main__':
-    connect("127.0.0.1", "lewis")
-    output = sendcommand("sudo ls")
-    passw = getpass.getpass("sudo password")
-    print(output)
-    close()
-    
+    # Opening SSH connection to example network device
+    test = SSH("192.168.1.1", "adminAccount", "superSecurePassword")
+    test.connect()
+    output, errors = test.send_command("en", "cisco")
+    output, errors = test.send_command("sh ip int brie")
+    print(output, errors)
+
+    # Closing the connection
+    test.close()
+    # del test

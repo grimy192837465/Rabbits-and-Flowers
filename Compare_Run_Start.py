@@ -1,22 +1,23 @@
 """
 Needs Testing
-
-"start_is_shorter" stuff needs revising - could start_conf be longer than run_conf?
-efficient difference detection algorithm research -> currently has O(n) running time per device
-
+PRNE Lab Fri 27th This should be done
 """
-import Remote_Connection
+import SSH_Connect as ssh
+import getpass
 
-def compare_run_start():
+def compare_run_start(device_address, device_uname, device_pass, enable_pass):
     # Setup Remote Connection
-    connection = Remote_Connection("127.0.0.1", 22)
-    connection.connect()
+    network_device = ssh.SSH(device_address, device_uname, device_pass)
+    network_device.connect()
     print("Getting device configuration")
-    connection.send_command("enable")
+    network_device.send_command("enable", enable_pass)
+
 
     # Will be 2 big lists containing each line
-    start_conf = connection.send_command("show startup-config").split('\n')
-    run_conf = connection.send_command("show running-config").split('\n')
+    output, errors = network_device.send_command("show startup-config")
+    start_conf = output.split("\n")
+    output, errors = network_device.send_command("show running-config")
+    run_conf = output.split('\n')
     # Differences - stores running configuration version of diff
     diffs = set()
     # Find shorter configuration
@@ -32,4 +33,5 @@ def compare_run_start():
         if start_is_shorter:
             for i in run_conf[len(start_conf[i]):]:
                 diffs.add(i)
+    network_device.close()
     return diffs
