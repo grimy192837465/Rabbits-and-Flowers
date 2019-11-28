@@ -52,14 +52,11 @@ class SSH:
         print("Closing SSH Connection")
         self._connection.close()
 
-    def __del__(self):
-        self.close()
-
 
 # For testing purposes only
 if __name__ == '__main__':
     # Opening SSH connection to example network device
-    test = SSH("192.168.1.1", "adminAccount", "superSecurePassword")
+    test = SSH("192.168.1.1", "adminAccount", "superSecretPassword")
     test.connect()
     output, errors = test.send_command("en", "cisco")
     output, errors = test.send_command("sh ip int brie")
