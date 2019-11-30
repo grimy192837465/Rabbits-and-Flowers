@@ -1,0 +1,33 @@
+import SSH_Connet as SSH
+import paramiko
+
+#Login details
+username = 'admin'
+password = 'adminpass'
+
+#Switch1 IP address and login authentication
+switch = ssh.SSH('192.168.1.10', username, password)
+
+switch.connect()
+
+file1 = open('switch1.txt', 'w')
+#switch.send_command ('en', 'cisco')
+output, errors = switch.send_command ('show start')
+
+file1.write(str(output))
+file1.close()
+switch.close()
+
+#Switch2 IP address and login authentication
+switch = ssh.SSH('192.168.1.20', username, password)
+switch.connect()
+
+file2 = open('switch2.txt', 'w')
+#switch.send_command ('en', 'cisco')
+output, errors = switch.send_command ('show start')
+
+file2.write(output)
+file2.close()
+switch.close()
+
+print(output,errors)
