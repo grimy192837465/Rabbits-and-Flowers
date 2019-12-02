@@ -1,0 +1,7 @@
+vlan 10
+name IT
+vlan 20
+name Sales
+vlan 30
+name Marketing
+end
