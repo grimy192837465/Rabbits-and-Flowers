@@ -52,8 +52,7 @@ class SSH:
                 print("Please specify a string name of a file with configuration commands in")
                 return None
             else:
-                with open(configuration, "r") as file:
-                    return self._remote_connection.send_config_from_file(file)
+                return self._remote_connection.send_config_from_file(configuration)
         else:
             if type(configuration) is not list:
                 print("Please pass configuration file as a list if not using a file")
