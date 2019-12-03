@@ -19,16 +19,16 @@ def writerunningconfig(text):
     file.close()
 
 
-def sendcommand(ssh, command, printTF, cmdin=None):
+def sendcommand(ssh, command, printTF):
     #stdin is used for commands requiring inputs
     #stdout gives the output of the command
     #stderr shows any errors
-    output, error = ssh.send_command(command, cmdin)
+    output = ssh.send_command(command)
     if printTF == True:
-        writerunningconfig (output.decode('UTF-8'))
+        writerunningconfig (output)
     #print(output)
-    #stdin.write("{}\n".format(cmdin))
-    return(output, error)
+    #stdin.write("{}\n".format)
+    return output
 
 
 def localFile():
@@ -58,7 +58,7 @@ def compare(routerConfig, grabbedOutput):
 if __name__ == '__main__':
     ssh = get_object('192.168.1.1', 'admin')
     ssh.connect()
-    output, errors = sendcommand(ssh, "sh run", True)
+    output = sendcommand(ssh, "sh run", True)
     grabbedOutput = localFile()
-    compare(output.decode('UTF-8'), grabbedOutput)
+    compare (output, grabbedOutput)
     ssh.close()
