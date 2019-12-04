@@ -17,6 +17,7 @@ import SSH_Connect as ssh
 import mysql.connector
 
 
+
 def extract_metrics(device_address, device_uname, device_pass, enable_pass):
     """
     Function used to get performance metrics from network devices
@@ -24,24 +25,36 @@ def extract_metrics(device_address, device_uname, device_pass, enable_pass):
     # Connect to device
     network_device = ssh.SSH(device_address, device_uname, device_pass)
     network_device.connect()
-    network_device.send_command("enable", enable_pass)
 
     # Get performance metrics
-    routing_table, errors = network_device.send_command("show ip route")
-    vlan_db, errors = network_device.send_command("show vlan brief")
-    syslogs, errors = network_device.send_command("show logging")
-    version, errors = network_device.send_command("show version")
+    routing_table = network_device.send_command("show ip route")
+    vlan_db = network_device.send_command("show vlan brief")
+    syslogs = network_device.send_command("show logging")
+    version = network_device.send_command("show version")
     # Return them
     return {"routing_table": routing_table, "vlan_db": vlan_db, "syslogs": syslogs, "version": version}
 
 
-def update_db(db_address, mysql_uname, mysql_pass):
+def update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics"):
 
     # Connect to MySQL DB
     # Get performance metrics
     metrics = extract_metrics()
 
-    # Insert into database
+    #connects to the database
+    mydb = mysql.connector.connect(host=db_address, user=mysql_uname, passwd=mysql_pass, db_name=db_name)
+    mycursor = mydb.cursor()
+
+    #commands to execute on the database
+    mycursor.execute(
+        "INSERT INTO performance (device_name, routing_table, vlan_db, syslogs, version) VALUES({}, {}, {}, {}, {})".format(
+            device_name,
+            metrics["routing_table"],
+            metrics["vlan_db"],
+            metrics["syslogs"],
+            metrics["version"]
+        )
+    )
 
     return
 
