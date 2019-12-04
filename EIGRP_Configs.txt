@@ -1,0 +1,4 @@
+router eigrp 1
+network 192.168.0.0 0.0.0.255
+do show ip eigrp interfaces
+end
