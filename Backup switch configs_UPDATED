@@ -1,6 +1,4 @@
 from SSH_Connect1 import SSH
-#import SSH_Connect as paramiko
-
 
 #Login details
 username = 'admin'
