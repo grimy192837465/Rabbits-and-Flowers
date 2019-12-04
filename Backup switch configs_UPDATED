@@ -35,4 +35,3 @@ output, errors = switch.send_command ('show start')
 file2.write(str(output))
 file2.close()# Close and save file2
 switch.close() #Close switch connection
- 
