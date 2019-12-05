@@ -1,5 +1,5 @@
 router eigrp 1
-network 192.168.0.0 0.0.0.255
+network 192.168.1.0 0.0.0.255
 no auto-summary
 do show ip eigrp interfaces
 end
