@@ -59,5 +59,5 @@ def update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics
     return
 
 
-def schedule_update(timeout):
+def update_performance_metrics(timeout):
     pass

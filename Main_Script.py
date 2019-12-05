@@ -1,21 +1,75 @@
 """
+##################################################
+PRNE Network Automation Integrated script
+Created by: Lewis, Daiva, Adam, Myles and Daryl")
+##################################################
 
-Created a potential outline for program
-Feel free to change or discuss what I have done here
+
+Main Script for Program.
+Contains user interface and calls other scripts as required
+
+
+
+######################
+WHEN CODE IS COMPLETED
+######################
+
+-Add import to your own individual task
+-Change "funcName" in VALID_OPTS below to your function in individual script
+
+###################################################
+DELETE THIS COMMENT WHEN YOU PASTE INTO YOUR REPORT
+###################################################
 
 """
+
+from Telnet_to_Switch import demo_telnet_session
+from SSH_Connect import demo_ssh_session
+from Backup_Switch_Configs import backup_switch_configs
+from Compare_Run_Start import compare_run_start
+from Compare_Run_with_Local_File import compare_run_with_local_file
+from Performance_Parameters import update_performance_metrics
+
+# For Daryl
+# from Configure_Loopback import configure_loopback
+
+
 import getpass
 from socket import inet_aton
 
 VALID_OPTS = {
-    "1.1": ["Unsecure Remote Connection", "funcName"],
-    "1.2": ["Secure Remote Connection", "funcName"],
-    "1.3": ["Backup Multiple Switch Configurations", "funcName"],
-    "2.1": ["Compare Running Configuration with Startup Configuration", "funcName"],
-    "2.2": ["Compare Running Configuration with Local File", "funcName"],
-    "3": ["Performance Parameters", "funcName"],
+    "1.1": ["Unsecure Remote Connection", demo_telnet_session],
+    "1.2": ["Secure Remote Connection", demo_ssh_session],
+    "1.3": ["Backup Multiple Switch Configurations", backup_switch_configs],
+    "2.1": ["Compare Running Configuration with Startup Configuration", compare_run_start],
+    "2.2": ["Compare Running Configuration with Local File", compare_run_with_local_file],
+    "3": ["Performance Parameters", update_performance_metrics],
     "4": ["Individual Task", "funcName"]
 }
+
+# For Daryl
+# "4": ["Individual Task", configure_loopback]
+
+
+def caller(func, *args, **kwargs):
+    """
+    Calls other functions
+    :param func: Must be a function name with NO brackets '()' eg. caller(print, x, ...)
+    :param args: All arguments to be passed to func
+    :param kwargs: All named arguments to be passed to func eg "secret="
+    :return: Whatever the function returns
+    """
+    if type(func) == str and func == "funcName":
+        print("No function defined for option given")
+    else:
+        try:
+            return func(*args, **kwargs)
+        except TypeError:
+            print("Cannot call this function!")
+            return None
+        except NameError:
+            print("Cannot find function with this name!")
+            return None
 
 
 def display_options():

@@ -48,11 +48,20 @@ def compare(routerConfig, grabbedOutput):
     j = 0
     while i< len(to_compare) and j<len(grabbedOutput):
         if to_compare[i] != grabbedOutput[j]:
-            print("Diffence detected. Line " + str(i) + " in router config: " + to_compare[i] + "\nfile configuration: "+ grabbedOutput[j])
+            print("Difference detected. Line " + str(i) + " in router config: " + to_compare[i] + "\nfile configuration: "+ grabbedOutput[j])
         i += 1
         j += 1
     if i != j:
         print("Files unequal")
+
+
+def compare_run_with_local_file(host, username, password, secret):
+    ssh = SSH(host, username, password, secret=secret)
+    ssh.connect()
+    output = sendcommand(ssh, "sh run", True)
+    grabbedOutput = localFile()
+    compare(output, grabbedOutput)
+    ssh.close()
 
 
 if __name__ == '__main__':

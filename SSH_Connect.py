@@ -113,15 +113,25 @@ class ParamikoSSH:
         self._connection.close()
 
 
+def demo_ssh_session(ip_address, username, password, secret=""):
+    # Opening SSH connection to example network device
+    # Secret is enable password
+    remote_device = SSH(ip_address, username, password, secret=secret)
+    remote_device.connect()
+    remote_device.send_command("sh ip int brie")
+
+    # Closing the connection
+    remote_device.close()
+
+
 # For testing purposes only
 if __name__ == '__main__':
     # Opening SSH connection to example network device
     # Secret is enable password
-    test = SSH("192.168.1.1", "admin", "admin", secret="admin")
-    test.connect()
-    test.send_command("enable")
-    test.send_command("sh ip int brie")
-    test.send_command("conf t")
-    test.send_command("no ip domain-lookup")
+    demo = SSH("192.168.1.1", "admin", "admin", secret="admin")
+    demo.connect()
+    demo.send_command("sh ip int brie")
+    demo.send_command("conf t")
+    demo.send_command("no ip domain-lookup")
     # Closing the connection
-    test.close()
+    demo.close()
