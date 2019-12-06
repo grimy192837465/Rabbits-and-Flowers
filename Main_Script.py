@@ -33,6 +33,9 @@ from Performance_Parameters import update_performance_metrics
 # For Daryl
 # from Configure_Loopback import configure_loopback
 
+# For Adam
+# from eigrp_test import eigrp_configuration
+
 
 import getpass
 from socket import inet_aton
@@ -45,6 +48,8 @@ VALID_OPTS = {
     "2.2": ["Compare Running Configuration with Local File", compare_run_with_local_file],
     "3": ["Performance Parameters", update_performance_metrics],
     "4": ["Individual Task", "funcName"]
+    "5": ["Individual Task", "eigrp_configuration"]
+
 }
 
 # For Daryl
