@@ -15,7 +15,8 @@ Run at intervals
 import time
 import SSH_Connect as ssh
 import mysql.connector
-
+import timeloop
+from datetime import timedelta
 
 
 def extract_metrics(device_address, device_uname, device_pass, enable_pass):
@@ -59,5 +60,12 @@ def update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics
     return
 
 
-def update_performance_metrics(timeout):
-    pass
+def update_performance_metrics(timeout, db_address, mysql_uname, mysql_pass, device_name, db_name="metrics"):
+    loop = timeloop()
+
+    @loop.job(interval=timedelta(timeout))
+    def schedule_update():
+        update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics")
+
+if __name__ == "__main__":
+    update_db()
