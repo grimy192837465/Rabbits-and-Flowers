@@ -1,0 +1,5 @@
+router rip
+version 2
+network 192.168.0.0 
+no auto-summary
+do show ip protocols
