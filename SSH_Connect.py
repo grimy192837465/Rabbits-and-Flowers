@@ -13,7 +13,15 @@ import sys
 
 
 class SSH:
-    def __init__(self, ip_address, username, password, device_type="cisco_ios", secret='', port=22):
+    def __init__(
+        self,
+        ip_address,
+        username,
+        password,
+        device_type="cisco_ios",
+        secret="",
+        port=22,
+    ):
         # Create a dictionary representing the networking device
         self._device = {
             "device_type": device_type,
@@ -49,7 +57,9 @@ class SSH:
         """
         if from_file:
             if type(configuration) is not str:
-                print("Please specify a string name of a file with configuration commands in")
+                print(
+                    "Please specify a string name of a file with configuration commands in"
+                )
                 return None
             else:
                 return self._remote_connection.send_config_from_file(configuration)
@@ -69,6 +79,7 @@ class ParamikoSSH:
     """
     Previous SSH connection method. Session is wiped after 1 command executes
     """
+
     def __init__(self, ip_address, username, password, port=22):
         self._connection = paramiko.SSHClient()
         self._address = ip_address
@@ -86,14 +97,16 @@ class ParamikoSSH:
                 hostname=self._address,
                 username=self._username,
                 password=self._password,
-                port=self._port
+                port=self._port,
             )
             print("Connected")
             return 0
 
         except paramiko.AuthenticationException:
             # Executed if authentication errors occur
-            print("Authentication exception occured please check your details and try again.")
+            print(
+                "Authentication exception occured please check your details and try again."
+            )
             # Below line commented out and changed with return statement to allow caller to control exception
             # to allow retries
             # sys.exit()
@@ -125,7 +138,7 @@ def demo_ssh_session(ip_address, username, password, secret=""):
 
 
 # For testing purposes only
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Opening SSH connection to example network device
     # Secret is enable password
     demo = SSH("192.168.1.1", "admin", "admin", secret="admin")
