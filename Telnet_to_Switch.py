@@ -1,6 +1,6 @@
-#Telnet to switch author @ Myles
+# Telnet to switch author @ Myles
 
-#The libraries I have imported:
+# The libraries I have imported:
 import telnetlib
 import getpass
 import sys
@@ -26,7 +26,7 @@ def demo_telnet_session(host, user, telnet_secret):
     print(tele.read_all)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # LOGIN FOR TELNET
     Host = "IP Address"
     User = input("Enter Username for Login")
