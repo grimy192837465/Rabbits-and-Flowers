@@ -32,10 +32,10 @@ from Compare_Run_with_Local_File import compare_run_with_local_file
 from Performance_Parameters import update_performance_metrics
 
 # For Daryl
-# from Configure_Loopback import configure_loopback
+from Configure_Address import configure_address
 
 # For Adam
-# from eigrp_test import eigrp_configuration
+from eigrp_test import eigrp_configuration
 
 
 OPTIONS = {
@@ -62,10 +62,10 @@ OPTIONS = {
           "function": update_performance_metrics,
             },
     "4": {"description": "Individual Task - Daryl",
-          "function": "configure_loopback"
+          "function": configure_address
           },
     "5": {"description": "Individual Task - Adam",
-          "function": "eigrp_configuration"
+          "function": eigrp_configuration
           }
 }
 
@@ -112,9 +112,9 @@ def get_enable_pass():
             return enable_pass
 
 
-def get_address():
+def get_address(prompt="Input IP Address for network device: "):
     while True:
-        address = input("Input IP Address for network device: ")
+        address = input(prompt)
         try:
             inet_aton(address)
             return address
@@ -167,8 +167,10 @@ def main():
             else:
                 break
 
-        display_options()
+        # Get Network Device Address
+        device_address = get_address()
 
+        display_options()
         # Loop until a valid option is found or keyboard interrupt caught
         while True:
             option = input("Choose your option: ")
@@ -178,11 +180,19 @@ def main():
             else:
                 break
 
-        # Get Network Device Address
-        device_address = get_address()
-
         # Run script specified by option
-        caller(VALID_OPTS[option]['function'], device_address, username, password, secret=enable_pass)
+        if option == "4":
+            caller(
+                OPTIONS[option]['function'],
+                device_address,
+                username,
+                password,
+                get_address(prompt="Input Address to be configured: "),
+                get_address(prompt="Input Subnet Mask to be configured"),  # Needs revisiting
+                secret=enable_pass
+            )
+        else:
+            caller(OPTIONS[option]['function'], device_address, username, password, secret=enable_pass)
 
         return 0
 
@@ -191,8 +201,9 @@ def main():
         print("Keyboard interrupt caught, exiting program")
         return 0
 
-    except:
-        print("An exception occured!")
+    except Exception as e:
+        print("\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print(f"An Exception Occured\n{e}")
         return 1
 
 
