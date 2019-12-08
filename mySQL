@@ -5,5 +5,5 @@ mydb = mysql.connector.connect(host="", user="", passwd="", database="")
 mycursor = mydb.cursor()
 
 print(mydb)
-#mycursor.execute("CREATE DATABASE mydatabase")
-#mycursor.execute("SHOW DATABASES")
+# mycursor.execute("CREATE DATABASE mydatabase")
+# mycursor.execute("SHOW DATABASES")
