@@ -22,7 +22,8 @@ DELETE THIS COMMENT WHEN YOU PASTE INTO YOUR REPORT
 ###################################################
 
 """
-
+import getpass
+from socket import inet_aton
 from Telnet_to_Switch import demo_telnet_session
 from SSH_Connect import demo_ssh_session
 from Backup_Switch_Configs import backup_switch_configs
@@ -37,23 +38,38 @@ from Performance_Parameters import update_performance_metrics
 # from eigrp_test import eigrp_configuration
 
 
-import getpass
-from socket import inet_aton
-
-VALID_OPTS = {
-    "1.1": ["Unsecure Remote Connection", demo_telnet_session],
-    "1.2": ["Secure Remote Connection", demo_ssh_session],
-    "1.3": ["Backup Multiple Switch Configurations", backup_switch_configs],
-    "2.1": ["Compare Running Configuration with Startup Configuration", compare_run_start],
-    "2.2": ["Compare Running Configuration with Local File", compare_run_with_local_file],
-    "3": ["Performance Parameters", update_performance_metrics],
-    "4": ["Individual Task", "funcName"],
-    "5": ["Individual Task", "eigrp_configuration"]
-
+OPTIONS = {
+    "1.1": {
+        "description": "Unsecure Remote Connection",
+        "function": demo_telnet_session,
+        },
+    "1.2": {
+        "description": "Secure Remote Connection",
+        "function": demo_ssh_session,
+        },
+    "1.3": {
+        "description":"Backup Multiple Switch Configurations",
+        "function": backup_switch_configs
+        },
+    "2.1": {
+        "description": "Compare Running Configuration with Startup Configuration",
+        "function": compare_run_start
+        },
+    "2.2": {"description": "Compare Running Configuration with Local File",
+            "function": compare_run_with_local_file
+            },
+    "3": {"description": "Performance Parameters",
+          "function": update_performance_metrics,
+            },
+    "4": {"description": "Individual Task - Daryl",
+          "function": "configure_loopback"
+          },
+    "5": {"description": "Individual Task - Adam",
+          "function": "eigrp_configuration"
+          }
 }
 
-# For Daryl
-# "4": ["Individual Task", configure_loopback]
+VALID_OPTS = OPTIONS.keys()
 
 
 def caller(func, *args, **kwargs):
@@ -79,9 +95,10 @@ def caller(func, *args, **kwargs):
 
 def display_options():
     global VALID_OPTS
-    print("\n################################################\n!OPTIONS NEED REVISION!\n")
-    for i in VALID_OPTS.keys():
-        print(f"{i}: {VALID_OPTS[i][0]}")
+    global OPTIONS
+    print("\n################################################\n")
+    for i in VALID_OPTS:
+        print(f"{i}: {OPTIONS[i]['description']}")
     print("\n################################################\n")
 
 
@@ -120,6 +137,7 @@ def yes_or_no(prompt=""):
 
 def main():
     global VALID_OPTS
+    global OPTIONS
     """
     Main function for program
     This will show a menu that will create
@@ -133,45 +151,51 @@ def main():
     print("Created by: Lewis, Daiva, Adam, Myles and Daryl")
     print("###############################################\n")
 
-    # Gets enable secret if its needed
-    needs_en_secret = yes_or_no(prompt="Will you need an enable secret for this session?")
-    enable_pass = get_enable_pass() if needs_en_secret else ""
-    del needs_en_secret
+    try:
+        # Gets enable secret if its needed
+        needs_en_secret = yes_or_no(prompt="Will you need an enable secret for this session?")
+        enable_pass = get_enable_pass() if needs_en_secret else ""
+        del needs_en_secret
 
-    # Get SSH account info
-    username = input("Input username for remote connection: ")
-    while True:
-        password = getpass.getpass("Input password for remote connection: ")
-        if password != getpass.getpass("Confirming password: "):
-            print("Passwords don't match!")
-            continue
-        else:
-            break
+        # Get account info for remote connections
+        username = input("Input username for remote connection: ")
+        while True:
+            password = getpass.getpass("Input password for remote connection: ")
+            if password != getpass.getpass("Confirming password: "):
+                print("Passwords don't match!")
+                continue
+            else:
+                break
 
-    display_options()
+        display_options()
 
-    # Loop until a valid option is found or keyboard interrupt caught
-    while True:
-        try:
+        # Loop until a valid option is found or keyboard interrupt caught
+        while True:
             option = input("Choose your option: ")
-            if option not in VALID_OPTS.keys():
+            if option not in VALID_OPTS:
                 print("Invalid option chosen")
                 continue
             else:
                 break
-        except KeyboardInterrupt:
-            print("\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print("Keyboard interrupt caught, exiting program")
-            break
 
-    # Run script specified by option
+        # Get Network Device Address
+        device_address = get_address()
 
+        # Run script specified by option
+        caller(VALID_OPTS[option]['function'], device_address, username, password, secret=enable_pass)
 
-    return 0
+        return 0
+
+    except KeyboardInterrupt:
+        print("\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("Keyboard interrupt caught, exiting program")
+        return 0
+
+    except:
+        print("An exception occured!")
+        return 1
 
 
 # If this script was called directly (eg. from command-line or IDLE) and not by another script, run main() function
 if __name__ == '__main__':
-    if main() != 0:
-        print("Program exit code signifies error during execution")
-
+    main()

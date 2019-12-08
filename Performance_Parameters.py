@@ -16,10 +16,12 @@ import time
 import SSH_Connect as ssh
 import mysql.connector
 import timeloop
+import getpass
 from datetime import timedelta
+from socket import inet_aton
 
 
-def extract_metrics(device_address, device_uname, device_pass, enable_pass):
+def extract_metrics(device_address, device_uname, device_pass, secret=""):
     """
     Function used to get performance metrics from network devices
     """
@@ -41,13 +43,30 @@ def extract_metrics(device_address, device_uname, device_pass, enable_pass):
     }
 
 
-def update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics"):
+def get_mysql_info():
+    print("Getting MySQL info..")
+    while True:
+        db_address = input("Enter Database Server address: ")
+        try:
+            inet_aton(db_address)
+            break
+        except OSError:
+            print("Incorrect address given: Be sure to specify an IP Address!")
+            continue
+
+    mysql_username = input("Enter database username: ")
+    mysql_pass = getpass.getpass("Enter database account password: ")
+
+    return [db_address. mysql_username, mysql_pass]
+
+
+def update_db(device_address, device_uname, device_pass, db_name="metrics"):
+    # Get performance metrics
+    metrics = extract_metrics(device_address, device_uname, device_pass)
 
     # Connect to MySQL DB
-    # Get performance metrics
-    metrics = extract_metrics()
+    db_address, mysql_uname, mysql_pass = get_mysql_info()
 
-    # connects to the database
     mydb = mysql.connector.connect(
         host=db_address, user=mysql_uname, passwd=mysql_pass, db_name=db_name
     )
@@ -56,7 +75,7 @@ def update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics
     # commands to execute on the database
     mycursor.execute(
         "INSERT INTO performance (device_name, routing_table, vlan_db, syslogs, version) VALUES({}, {}, {}, {}, {})".format(
-            device_name,
+            device_address,
             metrics["routing_table"],
             metrics["vlan_db"],
             metrics["syslogs"],
@@ -78,4 +97,4 @@ def update_performance_metrics(
 
 
 if __name__ == "__main__":
-    update_db()
+    update_performance_metrics("")
