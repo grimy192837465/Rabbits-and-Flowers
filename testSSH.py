@@ -4,7 +4,7 @@ import netmiko
 
 
 class SSH:
-    def __init__(self, ip_address, username, password, secret='', port=22):
+    def __init__(self, ip_address, username, password, secret="", port=22):
 
         # Create a dictionary representing the device
         self._device = {
@@ -23,7 +23,9 @@ class SSH:
     def send_configuration(self, from_file=False, configuration=None):
         if from_file:
             if type(configuration) is not str:
-                print("Please specify a string name of a file with configuration commands in")
+                print(
+                    "Please specify a string name of a file with configuration commands in"
+                )
                 return None
             else:
                 with open(configuration, "r") as file:
@@ -39,10 +41,9 @@ class SSH:
         self._remote_connection.disconnect()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = SSH("192.168.1.1", "admin", "admin", secret="admin")
     test.send_command("sh ip int brie")
     test.send_command("conf t")
     test.send_command("no ip domain-lookup")
     test.close()
-
