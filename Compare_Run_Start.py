@@ -21,6 +21,6 @@ def compare_run_start(device_address, device_uname, device_pass, enable_pass="")
 
 
 # For testing purposes only
-if __name__ == '__main__':
+if __name__ == "__main__":
     for i in compare_run_start("192.168.1.1", "admin", "admin", "admin"):
         print(i)

@@ -1,33 +1,49 @@
-#Telnet to switch author @ Myles
-
-#The libraries I have imported:
-import telnetlib
-import getpass
-import sys
+import paramiko
+import threading
+import netmiko
 
 
-def demo_telnet_session(host, user, telnet_secret):
-    # STARTS A TELNET SESSION
-    tele = telnetlib.Telnet(host)
+class SSH:
+    def __init__(self, ip_address, username, password, secret="", port=22):
 
-    tele.read_until("User: ")
-    tele.write(user + "\n")
+        # Create a dictionary representing the device
+        self._device = {
+            "device_type": "cisco_ios",
+            "host": ip_address,
+            "username": username,
+            "password": password,
+            "port": port,  # optional, defaults to 22
+            "secret": secret,  # optional, defaults to ''
+        }
+        self._remote_connection = netmiko.ConnectHandler(**self._device)
 
-    # CONFIGURING THE DEVICE
-    if telnet_secret:
-        tele.read_until("Secret: ")
-        tele.write(telnet_secret + "\n")
-        tele.write("enable\n")
-        tele.write("conf t\n")
+    def send_command(self, command):
+        return self._remote_connection.send_command(command)
 
-        tele.write("end\n")
-        tele.write("exit\n")
+    def send_configuration(self, from_file=False, configuration=None):
+        if from_file:
+            if type(configuration) is not str:
+                print(
+                    "Please specify a string name of a file with configuration commands in"
+                )
+                return None
+            else:
+                with open(configuration, "r") as file:
+                    return self._remote_connection.send_config_from_file(file)
+        else:
+            if type(configuration) is not list:
+                print("Please pass configuration file as a list if not using a file")
+                return None
+            else:
+                return self._remote_connection.send_config_set(configuration)
 
-    print(tele.read_all)
+    def close(self):
+        self._remote_connection.disconnect()
 
 
-if __name__ == '__main__':
-    # LOGIN FOR TELNET
-    Host = "IP Address"
-    User = input("Enter Username for Login")
-    secret = getpass.getpass("Telnet Password: ")
+if __name__ == "__main__":
+    test = SSH("192.168.1.1", "admin", "admin", secret="admin")
+    test.send_command("sh ip int brie")
+    test.send_command("conf t")
+    test.send_command("no ip domain-lookup")
+    test.close()
