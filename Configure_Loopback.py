@@ -1,7 +1,9 @@
 from SSH_Connect import SSH
 
 
-def configure_loopback(device_address, username, password, lo_address, netmask, lo_num=1, enable_pass=""):
+def configure_loopback(
+    device_address, username, password, lo_address, netmask, lo_num=1, enable_pass=""
+):
     """
     :param device_address: Router Address
     :param username: Administrator Username
@@ -19,7 +21,7 @@ def configure_loopback(device_address, username, password, lo_address, netmask, 
     configuration = [
         f"int lo{lo_num}",
         f"ip address {lo_address} {netmask}",
-        "description Configured Remotely using Python"
+        "description Configured Remotely using Python",
     ]
     remote_device.send_command("enable")
     remote_device.send_configuration(configuration=configuration)
@@ -27,4 +29,6 @@ def configure_loopback(device_address, username, password, lo_address, netmask, 
 
 # For testing purposes only
 if __name__ == "__main__":
-    configure_loopback("192.168.1.1", "admin", "admin", "10.10.10.2", "255.0.0.0", enable_pass="admin")
+    configure_loopback(
+        "192.168.1.1", "admin", "admin", "10.10.10.2", "255.0.0.0", enable_pass="admin"
+    )
