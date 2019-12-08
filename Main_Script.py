@@ -47,7 +47,7 @@ VALID_OPTS = {
     "2.1": ["Compare Running Configuration with Startup Configuration", compare_run_start],
     "2.2": ["Compare Running Configuration with Local File", compare_run_with_local_file],
     "3": ["Performance Parameters", update_performance_metrics],
-    "4": ["Individual Task", "funcName"]
+    "4": ["Individual Task", "funcName"],
     "5": ["Individual Task", "eigrp_configuration"]
 
 }
