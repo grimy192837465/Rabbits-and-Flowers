@@ -203,7 +203,7 @@ def main():
 
     except Exception as e:
         print("\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print(f"An Exception Occured\n{e}")
+        print(f"An Exception Occurred\n{e}")
         return 1
 
 
