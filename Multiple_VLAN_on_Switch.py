@@ -11,5 +11,6 @@ def configure_switch_vlan(ip_address, username, password, enable_pass=""):
 
 
 # test function
-configure_switch_vlan("192.168.0.1", "admin", "cisco")
-configure_switch_vlan("192.168.0.2", "admin", "cisco")
+if __name__ == "__main__":
+    configure_switch_vlan("192.168.0.1", "admin", "cisco")
+    configure_switch_vlan("192.168.0.2", "admin", "cisco")

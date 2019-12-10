@@ -1,6 +1,7 @@
 # Imports the file called SSH_Connect into this script to be used for SSH connection
 from SSH_Connect import SSH
 
+
 # What I am naming the function for my eigrp configuration
 def eigrp_configuration(ip_address, username, password, secret=""):
 
@@ -15,6 +16,7 @@ def eigrp_configuration(ip_address, username, password, secret=""):
     eigrp_conf.send_configuration(from_file=True, configuration="EIGRP_Configs.txt")
 
     # IP address, username and password for the router that is needed for the SSH conneciton to be successful
+
 
 if __name__ == "__main__":
     eigrp_configuration("192.168.1.1", "admin", "adminpass")
