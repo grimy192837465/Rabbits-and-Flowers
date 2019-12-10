@@ -30,6 +30,7 @@ from Backup_Switch_Configs import backup_switch_configs
 from Compare_Run_Start import compare_run_start
 from Compare_Run_with_Local_File import compare_run_with_local_file
 from Performance_Parameters import update_performance_metrics
+from Multiple_VLAN_on_Switch import configure_switch_vlan
 
 # For Daryl
 from Configure_Address import configure_address
