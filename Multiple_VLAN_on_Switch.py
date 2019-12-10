@@ -1,9 +1,9 @@
 from SSH_Connect import SSH
 
 # function that can be called to configure the vlans on switches
-def configure_switch_vlan(ip_address, username, password, enable_pass=""):
+def configure_switch_vlan(ip_address, username, password, secret=""):
     # creates the ssh connection and saves it to a variable
-    vlan_config = SSH(ip_address, username, password, secret=enable_pass)
+    vlan_config = SSH(ip_address, username, password, secret=secret)
     # connects to the device
     vlan_config.connect()
 
