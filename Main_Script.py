@@ -66,6 +66,9 @@ OPTIONS = {
           },
     "5": {"description": "Individual Task - Adam",
           "function": eigrp_configuration
+          },
+    "6": {"description": "Individual Task - Lewis",
+          "function": vlan_configuration
           }
 }
 
@@ -191,6 +194,14 @@ def main():
                 password,
                 get_address(prompt="Input Address to be configured: "),
                 get_address(prompt="Input Subnet Mask to be configured"),  # Needs revisiting
+                secret=enable_pass
+            )
+        elif option == "6":
+            output = caller(
+                OPTIONS[option]["function"]
+                ip_address,
+                username,
+                password,
                 secret=enable_pass
             )
         else:
