@@ -1,4 +1,4 @@
-# Imports the file called SSH_Connect into this script to be used for SSH conneciton
+# Imports the file called SSH_Connect into this script to be used for SSH connection
 from SSH_Connect import SSH
 
 # What I am naming the function for my eigrp configuration
