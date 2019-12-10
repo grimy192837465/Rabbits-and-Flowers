@@ -1,11 +1,11 @@
-# Imports the file called SSH_Connect into this script to be used for SSH conneciton
+# Imports the file called SSH_Connect into this script to be used for SSH connection
 from SSH_Connect import SSH
 
 # What I am naming the function for my eigrp configuration
-def eigrp_configuration(ip_address, username, password):
+def eigrp_configuration(ip_address, username, password, enable_secret=""):
 
     # Starts the SSH conneciton to the router
-    eigrp_conf = SSH(ip_address, username, password)
+    eigrp_conf = SSH(ip_address, username, password, secret=enable_secret)
 
     # Connects via a secure shell conneciton on port 22
     eigrp_conf.connect()
