@@ -85,11 +85,11 @@ def caller(func, *args, **kwargs):
     else:
         try:
             return func(*args, **kwargs)
-        except TypeError:
-            print("Cannot call this function!")
+        except TypeError as e:
+            print(f"Cannot call this function!\n{e}")
             return None
-        except NameError:
-            print("Cannot find function with this name!")
+        except NameError as e:
+            print(f"Cannot find function with this name!\n{e}")
             return None
 
 
@@ -181,8 +181,10 @@ def main():
                 break
 
         # Run script specified by option
-        if option == "4":
-            caller(
+        if option == "1.1":
+            output = caller(OPTIONS[option]['function'], device_address. username, password)
+        elif option == "4":
+            output = caller(
                 OPTIONS[option]['function'],
                 device_address,
                 username,
@@ -192,7 +194,8 @@ def main():
                 secret=enable_pass
             )
         else:
-            caller(OPTIONS[option]['function'], device_address, username, password, secret=enable_pass)
+            output = caller(OPTIONS[option]['function'], device_address, username, password, secret=enable_pass)
+            print(output)
 
         return 0
 

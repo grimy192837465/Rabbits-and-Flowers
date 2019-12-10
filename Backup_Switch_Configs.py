@@ -4,7 +4,7 @@ from socket import inet_aton
 
 def get_address(switch_number):
     while True:
-        address = input("Input IP Address for switch {}: ".format(switch_number)
+        address = input("Input IP Address for switch {}: ".format(switch_number))
         try:
             inet_aton(address)
             return address

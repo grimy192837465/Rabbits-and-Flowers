@@ -16,6 +16,6 @@ def eigrp_configuration(ip_address, username, password):
 
     # IP address, username and password for the router that is needed for the SSH conneciton to be successful
 
-
-eigrp_configuration("192.168.1.1", "admin", "adminpass")
-eigrp_configuration("192.168.1.2", "admin", "adminpass")
+if __name__ == "__main__":
+    eigrp_configuration("192.168.1.1", "admin", "adminpass")
+    eigrp_configuration("192.168.1.2", "admin", "adminpass")

@@ -66,7 +66,7 @@ def compare(routerConfig, grabbedOutput):
         print("Files unequal")
 
 
-def compare_run_with_local_file(host, username, password, secret):
+def compare_run_with_local_file(host, username, password, secret=""):
     ssh = SSH(host, username, password, secret=secret)
     ssh.connect()
     output = sendcommand(ssh, "sh run", True)

@@ -29,6 +29,7 @@ def configure_address(device_address, username, password, new_address, netmask, 
     # Get List of Interface to Configure
     int_brief = remote_device.send_command("sh ip int brief").split("\n")
     interfaces = [line.split()[0] for line in int_brief]
+    interfaces.append("Loopback1")
     del int_brief
 
     print("Possible interfaces:")
@@ -37,7 +38,7 @@ def configure_address(device_address, username, password, new_address, netmask, 
 
     while True:
         print("NOTE: When selecting an interface, please type out fully, shortened notation not supported yet..")
-        interface = input("Please choose an interface to configure address on")
+        interface = input("Please choose an interface to configure address on: ")
         if interface in interfaces:
             break
         else:
@@ -57,5 +58,5 @@ def configure_address(device_address, username, password, new_address, netmask, 
 # For testing purposes only
 if __name__ == "__main__":
     configure_address(
-        "192.168.1.1", "admin", "admin", enable_pass="admin"
+        "192.168.1.1", "admin", "cisco", "192.168.4.5", "255.255.255.0", enable_pass="cisco"
     )

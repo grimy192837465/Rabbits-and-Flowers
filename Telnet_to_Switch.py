@@ -26,6 +26,8 @@ def demo_telnet_session(host, user, telnet_secret):
 
 if __name__ == '__main__':
     # LOGIN FOR TELNET
-    Host = "IP Address"
-    User = input("Enter Username for Login")
+    Host = "192.168.1.2"
+    User = input("Enter Username for Login: ")
     secret = getpass.getpass("Telnet Password: ")
+    demo_telnet_session(Host, User, secret)
+
