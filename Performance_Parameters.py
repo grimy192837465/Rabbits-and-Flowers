@@ -12,12 +12,11 @@ Run at intervals
 -Once an hour
 
 """
-import time
 import SSH_Connect as ssh
 import mysql.connector
-import timeloop
+import multiprocessing
 import getpass
-from datetime import timedelta
+import time
 from socket import inet_aton
 
 
@@ -26,14 +25,16 @@ def extract_metrics(device_address, device_uname, device_pass, secret=""):
     Function used to get performance metrics from network devices
     """
     # Connect to device
-    network_device = ssh.SSH(device_address, device_uname, device_pass)
+    network_device = ssh.SSH(device_address, device_uname, device_pass, secret=secret)
     network_device.connect()
 
     # Get performance metrics
     routing_table = network_device.send_command("show ip route")
-    vlan_db = network_device.send_command("show vlan brief")
+    vlan_db = network_device.send_command("show vlans")
     syslogs = network_device.send_command("show logging")
     version = network_device.send_command("show version")
+
+    network_device.close()
     # Return them
     return {
         "routing_table": routing_table,
@@ -55,46 +56,68 @@ def get_mysql_info():
             continue
 
     mysql_username = input("Enter database username: ")
-    mysql_pass = getpass.getpass("Enter database account password: ")
 
-    return [db_address. mysql_username, mysql_pass]
+    while True:
+        mysql_pass = getpass.getpass("Enter database account password: ")
+        if mysql_pass != getpass.getpass("Confirming password: "):
+            print("Passwords dont match!")
+            continue
+        else:
+            break
+
+    return [db_address, mysql_username, mysql_pass]
 
 
-def update_db(device_address, device_uname, device_pass, db_name="metrics"):
+def update_db(device_address, device_uname, device_pass, db_address, mysql_uname, mysql_pass,  db_name="metrics", secret=""):
     # Get performance metrics
-    metrics = extract_metrics(device_address, device_uname, device_pass)
+    metrics = extract_metrics(device_address, device_uname, device_pass, secret=secret)
 
-    # Connect to MySQL DB
-    db_address, mysql_uname, mysql_pass = get_mysql_info()
-
-    mydb = mysql.connector.connect(
-        host=db_address, user=mysql_uname, passwd=mysql_pass, db_name=db_name
-    )
+    mydb = mysql.connector.connect(host=db_address, user=mysql_uname, passwd=mysql_pass, database=db_name)
     mycursor = mydb.cursor()
 
     # commands to execute on the database
+    mycursor.execute("USE metrics;")
     mycursor.execute(
-        "INSERT INTO performance (device_name, routing_table, vlan_db, syslogs, version) VALUES({}, {}, {}, {}, {})".format(
+        "INSERT INTO performance (device_name, routing_table, vlan_db, syslogs, version) VALUES(\"{}\", \"{}\", \"{}\", \"{}\", \"{}\");".format(
             device_address,
-            metrics["routing_table"],
-            metrics["vlan_db"],
-            metrics["syslogs"],
-            metrics["version"],
+            metrics["routing_table"].replace("\"", ""),
+            metrics["vlan_db"].replace("\"", ""),
+            metrics["syslogs"].replace("\"", ""),
+            metrics["version"].replace("\"", "")
         )
     )
+
+    mydb.commit()
 
     return
 
 
-def update_performance_metrics(
-    timeout, db_address, mysql_uname, mysql_pass, device_name, db_name="metrics"
-):
-    loop = timeloop()
+def update_performance_metrics(device_address, device_uname, device_pass, secret=""):
+    # Connect to MySQL DB
+    db_address, mysql_uname, mysql_pass = get_mysql_info()
 
-    @loop.job(interval=timedelta(timeout))
-    def schedule_update():
-        update_db(db_address, mysql_uname, mysql_pass, device_name, db_name="metrics")
+    while True:
+        try:
+            timeout = int(input("Please specify a timeout in seconds: "))
+            if timeout < 60:
+                print("Specify a timeout of at least 60s")
+                continue
+            else:
+                break
+        except TypeError:
+            print("Please input a number")
+            continue
 
+    def set_timeout(device_address, device_uname, device_pass, db_address, mysql_uname, mysql_pass, timeout, secret=""):
+        while True:
+            update_db(device_address, device_uname, device_pass, db_address, mysql_uname, mysql_pass, secret=secret)
+            time.sleep(timeout)
+
+    proc = multiprocessing.Process(target=set_timeout, args=(device_address, device_uname, device_pass, db_address, mysql_uname, mysql_pass, timeout))
+    proc.start()
+
+    return ("Kill this proc when finished", proc)
 
 if __name__ == "__main__":
-    update_performance_metrics("")
+    print("Scheduling update")
+    update_performance_metrics("192.168.0.1", "admin", "cisco")
