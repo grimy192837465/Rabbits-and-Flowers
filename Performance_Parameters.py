@@ -118,6 +118,7 @@ def update_performance_metrics(device_address, device_uname, device_pass, secret
 
     return ("Kill this proc when finished", proc)
 
+
 if __name__ == "__main__":
     print("Scheduling update")
     update_performance_metrics("192.168.0.1", "admin", "cisco")
