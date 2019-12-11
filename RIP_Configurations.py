@@ -1,9 +1,10 @@
-from SSH_Connect3 import SSH
+from SSH_Connect import SSH
+
 
 # Function is called to configure the routers
-def configure_rip(ip_address, username, password):
+def configure_rip(ip_address, username, password, secret=""):
     # creates the ssh connection which then saves it to a variable
-    rip_config = SSH(ip_address, username, password)
+    rip_config = SSH(ip_address, username, password, secret=secret)
 
     # connects to the router
     rip_config.connect()
@@ -14,6 +15,7 @@ def configure_rip(ip_address, username, password):
     )
 
 
-# test the rip function
-configure_rip("192.168.0.1", "admin", "cisco")
-configure_rip("192.168.0.2", "admin", "cisco")
+if __name__ == "__main__":
+    # test the rip function
+    configure_rip("192.168.0.1", "admin", "cisco")
+    configure_rip("192.168.0.2", "admin", "cisco")
