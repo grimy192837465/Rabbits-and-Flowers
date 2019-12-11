@@ -40,6 +40,9 @@ from eigrp_test import eigrp_configuration
 # For Lewis
 from Multiple_VLAN_on_Switch import configure_switch_vlan
 
+#For Daiva
+from RIP_Configurations import rip_configurations
+
 
 OPTIONS = {
     "1.1": {
@@ -72,6 +75,9 @@ OPTIONS = {
           },
     "6": {"description": "Individual Task - Lewis",
           "function": configure_switch_vlan
+          }
+    "7": {"description": "Individual Task - Daiva",
+          "function": rip_configurations
           }
 }
 
