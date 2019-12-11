@@ -40,45 +40,54 @@ from eigrp_test import eigrp_configuration
 # For Lewis
 from Multiple_VLAN_on_Switch import configure_switch_vlan
 
-#For Daiva
-from RIP_Configurations import configure_rip
+# For Daiva
+from RIP_Configurations import RIP_Configurations
+
+# For Myles
+from OSPF import configure_ospf
 
 
 OPTIONS = {
     "1.1": {
         "description": "Unsecure Remote Connection",
         "function": demo_telnet_session,
-        },
-    "1.2": {
-        "description": "Secure Remote Connection",
-        "function": demo_ssh_session,
-        },
+    },
+    "1.2": {"description": "Secure Remote Connection", "function": demo_ssh_session,},
     "1.3": {
-        "description":"Backup Multiple Switch Configurations",
-        "function": backup_switch_configs
-        },
+        "description": "Backup Multiple Switch Configurations",
+        "function": backup_switch_configs,
+    },
     "2.1": {
         "description": "Compare Running Configuration with Startup Configuration",
-        "function": compare_run_start
-        },
-    "2.2": {"description": "Compare Running Configuration with Local File",
-            "function": compare_run_with_local_file
-            },
-    "3": {"description": "Performance Parameters",
-          "function": update_performance_metrics,
-            },
-    "4": {"description": "Individual Task - Daryl",
-          "function": configure_address
-          },
-    "5": {"description": "Individual Task - Adam",
-          "function": eigrp_configuration
-          },
-    "6": {"description": "Individual Task - Lewis",
-          "function": configure_switch_vlan
-          },
-    "7": {"description": "Individual Task - Daiva",
-          "function": configure_rip
-          }
+        "function": compare_run_start,
+    },
+    "2.2": {
+        "description": "Compare Running Configuration with Local File",
+        "function": compare_run_with_local_file,
+    },
+    "3": {
+        "description": "Performance Parameters",
+        "function": update_performance_metrics,
+    },
+    "4": {
+        "description": "Individual Task - Daryl",
+        "function": configure_address
+    },
+    "5": {
+        "description": "Individual Task - Adam",
+        "function": eigrp_configuration
+    },
+    "6": {
+        "description": "Individual Task - Lewis", 
+        "function": configure_switch_vlan
+    },
+    "7": {
+        "description": "Individual Task - Daiva", 
+        "function": RIP_Configurations
+    },
+    "8": {
+        "description": "Individual Task - Myles", 
+        "function": configure_ospf},
 }
 
 VALID_OPTS = OPTIONS.keys()
@@ -165,7 +174,9 @@ def main():
 
     try:
         # Gets enable secret if its needed
-        needs_en_secret = yes_or_no(prompt="Will you need an enable secret for this session?")
+        needs_en_secret = yes_or_no(
+            prompt="Will you need an enable secret for this session?"
+        )
         enable_pass = get_enable_pass() if needs_en_secret else ""
         del needs_en_secret
 
@@ -194,19 +205,29 @@ def main():
 
         # Run script specified by option
         if option == "1.1":
-            output = caller(OPTIONS[option]['function'], device_address. username, password)
+            output = caller(
+                OPTIONS[option]["function"], device_address.username, password
+            )
         elif option == "4":
             output = caller(
-                OPTIONS[option]['function'],
+                OPTIONS[option]["function"],
                 device_address,
                 username,
                 password,
                 get_address(prompt="Input Address to be configured: "),
-                get_address(prompt="Input Subnet Mask to be configured"),  # Needs revisiting
-                secret=enable_pass
+                get_address(
+                    prompt="Input Subnet Mask to be configured"
+                ),  # Needs revisiting
+                secret=enable_pass,
             )
         else:
-            output = caller(OPTIONS[option]['function'], device_address, username, password, secret=enable_pass)
+            output = caller(
+                OPTIONS[option]["function"],
+                device_address,
+                username,
+                password,
+                secret=enable_pass,
+            )
             print(output)
 
         return 0
@@ -223,5 +244,5 @@ def main():
 
 
 # If this script was called directly (eg. from command-line or IDLE) and not by another script, run main() function
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
