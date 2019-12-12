@@ -1,5 +1,4 @@
-# Telnet to switch author @ Myles
-# The libraries I have imported:
+# Libraries imported:
 import telnetlib
 import getpass
 
