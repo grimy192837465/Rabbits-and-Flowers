@@ -8,19 +8,6 @@ Created by: Lewis, Daiva, Adam, Myles and Daryl")
 Main Script for Program.
 Contains user interface and calls other scripts as required
 
-
-
-######################
-WHEN CODE IS COMPLETED
-######################
-
--Add import to your own individual task
--Change "funcName" in VALID_OPTS below to your function in individual script
-
-###################################################
-DELETE THIS COMMENT WHEN YOU PASTE INTO YOUR REPORT
-###################################################
-
 """
 import getpass
 from socket import inet_aton
@@ -217,7 +204,7 @@ def main():
                 password,
                 secret=enable_pass,
             )
-            print(output)
+        print(output if output is not None else "No Output")
 
         return 0
 
