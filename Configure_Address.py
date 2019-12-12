@@ -1,4 +1,5 @@
 from SSH_Connect import SSH
+from socket import inet_aton
 
 
 def yes_or_no(prompt=""):
@@ -13,17 +14,26 @@ def yes_or_no(prompt=""):
             continue
 
 
-def configure_address(device_address, username, password, new_address, netmask, enable_pass=""):
+def get_address(prompt="Input IP Address: "):
+    while True:
+        address = input(prompt)
+        try:
+            inet_aton(address)
+            return address
+        except OSError:
+            print("Invalid address entered:")
+            continue
+
+
+def configure_address(device_address, username, password, secret=""):
     """
     :param device_address: Router Address
     :param username: Administrator Username
     :param password: Administrator Password - Recommended to be passed in via getpass
-    :param new_address: Address for the configured interface
-    :param netmask: Subnet mask for the configured interface
     :param enable_pass: Enable password
     :return: Status Code
     """
-    remote_device = SSH(device_address, username, password, secret=enable_pass)
+    remote_device = SSH(device_address, username, password, secret=secret)
     remote_device.connect()
 
     # Get List of Interface to Configure
@@ -45,6 +55,9 @@ def configure_address(device_address, username, password, new_address, netmask, 
             print("Invalid interface.")
             continue
 
+    new_address = get_address(prompt=f"Enter new address for {interface}: ")
+    netmask = get_address(prompt=f"Enter new subnet mask for {interface}: ")
+
     # Create configuration list to send to router
     configuration = [
         f"int {interface}",
@@ -57,6 +70,4 @@ def configure_address(device_address, username, password, new_address, netmask, 
 
 # For testing purposes only
 if __name__ == "__main__":
-    configure_address(
-        "192.168.1.1", "admin", "cisco", "192.168.4.5", "255.255.255.0", enable_pass="cisco"
-    )
+    configure_address("192.168.1.1", "admin", "cisco", "192.168.4.5")

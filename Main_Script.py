@@ -87,7 +87,8 @@ OPTIONS = {
     },
     "8": {
         "description": "Individual Task - Myles", 
-        "function": configure_ospf},
+        "function": configure_ospf
+    }
 }
 
 VALID_OPTS = OPTIONS.keys()
@@ -161,7 +162,7 @@ def main():
     global OPTIONS
     """
     Main function for program
-    This will show a menu that will create
+    This will show a menu that will give user the option to choose what they want to do
 
     :return int: status code
     """
@@ -207,18 +208,6 @@ def main():
         if option == "1.1":
             output = caller(
                 OPTIONS[option]["function"], device_address.username, password
-            )
-        elif option == "4":
-            output = caller(
-                OPTIONS[option]["function"],
-                device_address,
-                username,
-                password,
-                get_address(prompt="Input Address to be configured: "),
-                get_address(
-                    prompt="Input Subnet Mask to be configured"
-                ),  # Needs revisiting
-                secret=enable_pass,
             )
         else:
             output = caller(
