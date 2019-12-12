@@ -4,12 +4,10 @@ Allows you to instantiate a ssh connection to a remote host using paramiko and s
 Sends stdout back to the caller
 
 
-NOTE: No need to enter enable password - its handled by paramiko
+NOTE: No need to enter enable password - its handled by netmiko
 """
 
-import paramiko
 import netmiko
-import sys
 
 
 class SSH:
@@ -73,57 +71,6 @@ class SSH:
     def close(self):
         # Closes the connection
         self._remote_connection.disconnect()
-
-
-class ParamikoSSH:
-    """
-    Previous SSH connection method. Session is wiped after 1 command executes
-    """
-
-    def __init__(self, ip_address, username, password, port=22):
-        self._connection = paramiko.SSHClient()
-        self._address = ip_address
-        self._username = username
-        self._password = password
-        self._port = port
-
-    def connect(self):
-        try:
-            # Automatically add unknown hosts to known hosts
-            self._connection.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            print("*****Connecting...*****")
-            # Connect to remote host
-            self._connection.connect(
-                hostname=self._address,
-                username=self._username,
-                password=self._password,
-                port=self._port,
-            )
-            print("Connected")
-            return 0
-
-        except paramiko.AuthenticationException:
-            # Executed if authentication errors occur
-            print(
-                "Authentication exception occured please check your details and try again."
-            )
-            # Below line commented out and changed with return statement to allow caller to control exception
-            # to allow retries
-            # sys.exit()
-            # Non zero return codes signify error
-            return 1
-
-    def send_command(self, command, cmd_input=None):
-        # stdin is used for commands requiring inputs
-        # stdout gives the output of the command
-        # stderr shows any errors
-        stdin, stdout, stderr = self._connection.exec_command(command)
-        stdin.write("{}\n".format(cmd_input))
-        return stdout.read(), stderr.read()
-
-    def close(self):
-        print("Closing SSH Connection")
-        self._connection.close()
 
 
 def demo_ssh_session(ip_address, username, password, secret=""):

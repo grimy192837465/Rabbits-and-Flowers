@@ -1,6 +1,5 @@
 """
-Needs Testing
-PRNE Lab Fri 27th This should be done
+Compare Running Configuration with startup configuration
 """
 from SSH_Connect import SSH
 import getpass
@@ -16,11 +15,11 @@ def compare_run_start(device_address, device_uname, device_pass, secret=""):
     start_conf = network_device.send_command("show start").split("\n")
     run_conf = network_device.send_command("show run").split("\n")
 
-    # Use difflib to return generator of differences
+    # Use difflib to return list of differences
     return list(difflib.context_diff(start_conf, run_conf))
 
 
 # For testing purposes only
 if __name__ == "__main__":
-    for i in compare_run_start("192.168.1.2", "admin", "cisco", enable_pass="cisco"):
+    for i in compare_run_start("192.168.1.2", "admin", "cisco", secret="cisco"):
         print(i)

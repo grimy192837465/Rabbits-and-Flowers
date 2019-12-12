@@ -45,6 +45,10 @@ def extract_metrics(device_address, device_uname, device_pass, secret=""):
 
 
 def get_mysql_info():
+    """
+    Gets mysql database information
+    :return list: Contains a list comprised of: Database Address, MySQL Username, MySQL Password
+    """
     print("Getting MySQL info..")
     while True:
         db_address = input("Enter Database Server address: ")
@@ -93,7 +97,7 @@ def update_db(device_address, device_uname, device_pass, db_address, mysql_uname
 
 
 def update_performance_metrics(device_address, device_uname, device_pass, secret=""):
-    # Connect to MySQL DB
+    # Get MySQL info
     db_address, mysql_uname, mysql_pass = get_mysql_info()
 
     while True:
