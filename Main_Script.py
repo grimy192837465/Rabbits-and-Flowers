@@ -39,7 +39,10 @@ OPTIONS = {
         "description": "Unsecure Remote Connection",
         "function": demo_telnet_session,
     },
-    "1.2": {"description": "Secure Remote Connection", "function": demo_ssh_session,},
+    "1.2": {
+        "description": "Secure Remote Connection", 
+        "function": demo_ssh_session,
+    },
     "1.3": {
         "description": "Backup Multiple Switch Configurations",
         "function": backup_switch_configs,
